@@ -314,6 +314,9 @@
 		minScale: 0.3,
 		maxScale: 6,
 
+		// The default rotation value for the element in degrees
+		rotate: 0,
+
 		// The default step for the range input
 		// Precendence: default < HTML attribute < option setting
 		rangeStep: 0.05,
@@ -451,7 +454,7 @@
 			var $set = this.$set;
 			var i = $set.length;
 			while(i--) {
-				$.style($set[i], 'transform', transform);
+				$.style($set[i], 'transform', transform + ' rotate(' + this.options.rotate + 'deg)');
 
 				// Support IE9-11, Edge 13-14+
 				// Set attribute alongside style attribute
@@ -486,6 +489,8 @@
 				if (this.isSVG && (!transform || transform === 'none')) {
 					transform = $.attr(transformElem, 'transform') || 'none';
 				}
+        
+				transform = transform.split(' rotate')[0];
 			}
 
 			// Convert any transforms set by the user to matrix format
@@ -867,6 +872,9 @@
 					case 'panOnlyWhenZoomed':
 						this._checkPanWhenZoomed();
 						break;
+					case 'rotate':
+						this.rotate = value;
+						break;
 					case '$set':
 						if (value instanceof $ && value.length) {
 							this.$set = value;
@@ -905,7 +913,8 @@
 			var styles = {
 				// Set the same default whether SVG or HTML
 				// transform-origin cannot be changed to 50% 50% in IE9-11 or Edge 13-14+
-				'transform-origin': this.isSVG ? '0 0' : '50% 50%'
+				'transform-origin': this.isSVG ? '0 0' : '50% 50%',
+				'image-orientation': '0deg'
 			};
 			// Set elem styles
 			if (!this.options.disablePan) {
